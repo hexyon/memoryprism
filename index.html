@@ -177,43 +177,106 @@
             gap: 10px;
             margin-top: 20px;
         }
-        @media screen and (max-width: 768px) {
-            .page-container {
-                flex-direction: column;
-                margin: 20px auto;
-            }
-            .left-sidebar,
-            .right-sidebar,
-            .main-container {
-                width: 100%;
-                margin: 0 0 20px 0;
-            }
-            .left-sidebar,
-            .right-sidebar {
-                order: 1;
-            }
-            .main-container {
-                order: 0;
-            }
-            #editor {
-                height: 150px;
-            }
-            .button-group {
-                flex-direction: column;
-            }
-            .button {
-                width: 100%;
-                margin-right: 0;
-            }
-            #current-date-container {
-                height: auto;
-                padding: 15px 0;
-            }
-            #recorded-dates-container {
-                height: auto;
-                max-height: 200px;
-            }
-        }
+@media screen and (max-width: 768px) {
+    .page-container {
+        flex-direction: column;
+        margin: 10px;
+        padding: 0 15px;
+    }
+
+    .left-sidebar,
+    .right-sidebar,
+    .main-container {
+        width: calc(100% - 30px);
+        margin: 10px 0;
+        max-width: none;
+    }
+
+    /* Reorder sidebar and main content */
+    .left-sidebar {
+        order: 2;
+    }
+    .main-container {
+        order: 1;
+    }
+    .right-sidebar {
+        order: 3;
+    }
+
+    /* Date container styling */
+    #current-date-container {
+        padding: 20px 15px;
+        margin-bottom: 15px;
+        height: auto;
+    }
+
+    #current-date {
+        font-size: 24px;
+        margin: 5px 0;
+    }
+
+    #current-time {
+        font-size: 20px;
+    }
+
+    /* Editor area */
+    #editor {
+        height: 200px;
+        margin-top: 15px;
+        font-size: 16px;
+    }
+
+    /* Button group styling */
+    .button-group {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin: 15px 0;
+    }
+
+    .button {
+        width: 100%;
+        margin: 0;
+        padding: 12px;
+        font-size: 16px;
+    }
+
+    /* Recorded dates container */
+    #recorded-dates-container {
+        max-height: 200px;
+        margin-top: 15px;
+    }
+
+    .history-item {
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+        font-size: 14px;
+    }
+
+    /* Quill editor toolbar */
+    .ql-toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        padding: 8px;
+    }
+
+    .ql-toolbar button {
+        margin: 2px;
+    }
+
+    /* Output area */
+    #output {
+        font-size: 16px;
+        padding: 10px 0;
+    }
+
+    /* Media elements */
+    img, video, audio {
+        max-width: 100%;
+        height: auto;
+        margin: 10px 0;
+    }
+}
     </style>
 </head>
 <body>
