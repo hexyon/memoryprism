@@ -8,6 +8,7 @@
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@400;500;700&display=swap" rel="stylesheet">
     <link id="theme-stylesheet" rel="stylesheet" href="styles/styles.css">
     <style>
         /* Previous styles remain unchanged */
@@ -18,12 +19,12 @@
             margin: 0;
             padding: 0;
             background-color: #fafafa;
-            display: flex;
-            justify-content: center;
         }
 
         .page-container {
+            --container-reference-height: 312px;
             display: flex;
+            align-items: flex-start;
             width: 100%;
             max-width: 1200px;
             margin: 50px auto;
@@ -32,7 +33,7 @@
         .side-container {
             background-color: #ffffff;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
+            border-radius: 0;
             padding: 20px;
             margin-bottom: 20px;
         }
@@ -57,7 +58,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            border-radius: 10px;
+            border-radius: 0;
             overflow: hidden;
             position: relative;
         }
@@ -94,55 +95,91 @@
         }
 
         #recorded-dates-container {
-            height: 300px;
+            box-sizing: border-box;
+            height: var(--container-reference-height);
             overflow-y: auto;
         }
 
-        .main-container {
+        .main-column {
             width: 800px;
-            padding: 20px;
             background-color: #ffffff;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
+        }
+
+        .main-container {
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            height: var(--container-reference-height);
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 0;
             overflow: hidden;
         }
 
         #editor {
-            height: 200px;
+            box-sizing: border-box;
+            flex: 1;
+            min-height: 0;
+            height: auto;
             background-color: #f5f5f5;
             border: none;
-            border-radius: 10px;
+            border-radius: 0;
             margin-top: 20px;
             padding: 15px;
             font-size: 18px;
         }
 
         .ql-toolbar {
-            border-radius: 10px;
+            border-radius: 0;
         }
 
         .ql-snow .ql-picker-label,
         .ql-snow .ql-picker-options {
-            border-radius: 10px;
+            border-radius: 0;
         }
 
         .button {
-            border: none;
-            border-radius: 10px;
-            padding: 10px 20px;
-            font-size: 18px;
+            border: 1px solid #dddddd;
+            border-radius: 0;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            font-size: 16px;
             font-weight: 500;
-            background-color: #007aff;
-            color: #ffffff;
+            background-color: #ffffff;
+            color: #000000;
             cursor: pointer;
-            box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
-            margin-top: 20px;
-            margin-right: 10px;
-            transition: background-color 0.3s;
+            box-shadow: none;
+            margin: 0;
+            transition: background-color 0.3s, border-color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
         }
 
         .button:hover {
-            background-color: #005bb5;
+            background-color: #f2f2f2;
+            border-color: #000000;
+        }
+
+        .button [data-lucide],
+        #sort-toggle [data-lucide] {
+            display: block;
+            width: 18px;
+            height: 18px;
+            stroke-width: 2.2;
+            pointer-events: none;
+        }
+
+        #sort-toggle [data-lucide] {
+            width: 22px;
+            height: 22px;
+        }
+
+        #action-buttons-container {
+            padding: 12px;
         }
 
         #output {
@@ -152,8 +189,18 @@
             line-height: 1.6;
             font-size: 18px;
             color: #333;
-            margin-top: 20px;
             max-width: 100%;
+        }
+
+        #output-container {
+            display: none;
+            padding: 20px;
+            background-color: #ffffff;
+            border-top: 1px solid #dddddd;
+        }
+
+        #output-container.has-output {
+            display: block;
         }
 
         #history {
@@ -176,24 +223,31 @@
 
         .ql-editor::-webkit-scrollbar,
         #recorded-dates-container::-webkit-scrollbar {
-            width: 10px;
+            width: 6px;
         }
 
         .ql-editor::-webkit-scrollbar-track,
         #recorded-dates-container::-webkit-scrollbar-track {
-            background: #f1f1f1;
+            background: #f5f5f5;
         }
 
         .ql-editor::-webkit-scrollbar-thumb,
         #recorded-dates-container::-webkit-scrollbar-thumb {
-            background-color: #007aff;
-            border-radius: 10px;
-            border: 3px solid #f1f1f1;
+            background-color: #8f8f8f;
+            border-radius: 6px;
+            border: 1px solid #f5f5f5;
         }
 
         .ql-editor::-webkit-scrollbar-thumb:hover,
         #recorded-dates-container::-webkit-scrollbar-thumb:hover {
-            background-color: #0056b3;
+            background-color: #6f6f6f;
+        }
+
+        .ql-editor::-webkit-scrollbar-button,
+        #recorded-dates-container::-webkit-scrollbar-button {
+            display: none;
+            width: 0;
+            height: 0;
         }
 
         #media-upload {
@@ -201,13 +255,67 @@
         }
 
         .button-group {
+            display: grid;
+            grid-template-columns: repeat(3, 32px);
+            justify-content: center;
+            gap: 6px;
+            margin: 0;
+        }
+
+        button,
+        input,
+        .side-container,
+        .main-column,
+        .main-container,
+        #editor,
+        #output-container,
+        #duplicate-warning,
+        .ql-toolbar,
+        .ql-container,
+        .ql-snow .ql-picker-label,
+        .ql-snow .ql-picker-options {
+            border-radius: 0 !important;
+        }
+
+        header {
             display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 20px;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 0.75rem 2rem;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: none;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            min-height: 48px;
+            width: auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            width: 100%;
+        }
+
+        .logo-text {
+            font-family: 'Alegreya', Georgia, serif;
+            font-weight: 400;
+            font-size: 1.1rem;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: #333;
+            margin: 0;
         }
 
         @media screen and (max-width: 768px) {
+            header {
+                padding: max(0.75rem, env(safe-area-inset-top)) 1rem 0.75rem;
+            }
+
             .page-container {
                 flex-direction: column;
                 margin: 10px;
@@ -216,10 +324,17 @@
 
             .left-sidebar,
             .right-sidebar,
-            .main-container {
+            .main-column {
                 width: calc(100% - 30px);
                 margin: 10px 0;
                 max-width: none;
+            }
+
+            .main-container {
+                margin: 0;
+                max-width: none;
+                display: block;
+                height: auto;
             }
 
             /* Reorder sidebar and main content */
@@ -227,7 +342,7 @@
                 order: 2;
             }
 
-            .main-container {
+            .main-column {
                 order: 1;
             }
 
@@ -254,6 +369,7 @@
             /* Editor area */
             #editor {
                 height: 200px;
+                min-height: 200px;
                 margin-top: 15px;
                 font-size: 16px;
             }
@@ -261,20 +377,21 @@
             /* Button group styling */
             .button-group {
                 display: grid;
-                grid-template-columns: 1fr;
-                gap: 10px;
-                margin: 15px 0;
+                grid-template-columns: repeat(5, 32px);
+                gap: 8px;
+                margin: 0;
             }
 
             .button {
-                width: 100%;
+                width: 32px;
+                height: 32px;
                 margin: 0;
-                padding: 12px;
                 font-size: 16px;
             }
 
             /* Recorded dates container */
             #recorded-dates-container {
+                height: auto;
                 max-height: 200px;
                 margin-top: 15px;
             }
@@ -299,7 +416,6 @@
             /* Output area */
             #output {
                 font-size: 16px;
-                padding: 10px 0;
             }
 
             /* Media elements */
@@ -315,6 +431,12 @@
 </head>
 
 <body>
+    <header role="banner">
+        <div class="logo">
+            <span class="logo-text">Memory Prism</span>
+        </div>
+    </header>
+
     <div class="page-container">
         <div class="left-sidebar">
             <div class="side-container" id="current-date-container">
@@ -324,20 +446,26 @@
                     style="position: relative; z-index: 1; color: white; font-size: 20px; margin-top: 5px; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">
                 </div>
             </div>
-        </div>
-        <div class="main-container">
-            <div id="editor"></div>
-            <div id="duplicate-warning">⚠️ This entry is a duplicate and will not be saved.</div>
-            <div class="button-group">
-                <button class="button" onclick="submitEntry()">Submit</button>
-                <button class="button" onclick="saveFile()">Save File</button>
-                <input type="file" id="fileInput" style="display: none;" onchange="loadFile()">
-                <button class="button" onclick="document.getElementById('fileInput').click()">Load File</button>
-                <input type="file" id="media-upload" accept="image/*,video/*,audio/*" multiple>
-                <button class="button" onclick="document.getElementById('media-upload').click()">Add Media</button>
-                <button class="button" onclick="downloadMedia()">Download Media</button>
+            <div class="side-container" id="action-buttons-container">
+                <div class="button-group" aria-label="Memory actions">
+                    <button class="button" onclick="submitEntry()" title="Submit" aria-label="Submit"><i data-lucide="circle-check" aria-hidden="true"></i></button>
+                    <button class="button" onclick="saveFile()" title="Save file" aria-label="Save file"><i data-lucide="save" aria-hidden="true"></i></button>
+                    <input type="file" id="fileInput" style="display: none;" onchange="loadFile()">
+                    <button class="button" onclick="document.getElementById('fileInput').click()" title="Load file" aria-label="Load file"><i data-lucide="folder-open" aria-hidden="true"></i></button>
+                    <input type="file" id="media-upload" accept="image/*,video/*,audio/*" multiple>
+                    <button class="button" onclick="document.getElementById('media-upload').click()" title="Add media" aria-label="Add media"><i data-lucide="image-plus" aria-hidden="true"></i></button>
+                    <button class="button" onclick="downloadMedia()" title="Download media" aria-label="Download media"><i data-lucide="download" aria-hidden="true"></i></button>
+                </div>
             </div>
-            <div id="output"></div>
+        </div>
+        <div class="main-column">
+            <div class="main-container">
+                <div id="editor"></div>
+            <div id="duplicate-warning">⚠️ This entry is a duplicate and will not be saved.</div>
+            </div>
+            <div id="output-container">
+                <div id="output"></div>
+            </div>
         </div>
         <div class="right-sidebar">
             <div style="position: relative;">
@@ -345,12 +473,27 @@
                     <h3>Recorded Dates</h3>
                     <div id="history"></div>
                 </div>
-                <button id="sort-toggle" onclick="toggleSort()" title="Toggle sort order">⇅</button>
+                <button id="sort-toggle" onclick="toggleSort()" title="Sort oldest first" aria-label="Sort oldest first"><i data-lucide="arrow-up-narrow-wide" aria-hidden="true"></i></button>
             </div>
         </div>
     </div>
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
     <script>
+        function renderIcons() {
+            if (window.lucide) {
+                window.lucide.createIcons();
+            }
+        }
+
+        function setSortIcon() {
+            const button = document.getElementById('sort-toggle');
+            button.innerHTML = `<i data-lucide="${sortNewestFirst ? 'arrow-up-narrow-wide' : 'arrow-down-wide-narrow'}" aria-hidden="true"></i>`;
+            button.title = sortNewestFirst ? 'Sort oldest first' : 'Sort newest first';
+            button.setAttribute('aria-label', button.title);
+            renderIcons();
+        }
+
         var quill = new Quill('#editor', {
             theme: 'snow',
             modules: {
@@ -374,7 +517,7 @@
                     year: 'numeric'
                 });
                 const formattedTime = d.toLocaleTimeString('en-US', {
-                    hour: 'numeric',  // Changed from '2-digit' to 'numeric'
+                    hour: 'numeric',
                     minute: '2-digit',
                     hour12: true
                 });
@@ -384,10 +527,17 @@
                 year: 'numeric',
                 month: 'numeric',
                 day: 'numeric',
-                hour: 'numeric',  // Changed from '2-digit' to 'numeric'
+                hour: 'numeric',
                 minute: '2-digit',
                 hour12: true
             });
+        }
+
+        function renderOutput(text) {
+            const output = document.getElementById('output');
+            const outputContainer = document.getElementById('output-container');
+            output.innerHTML = text;
+            outputContainer.classList.toggle('has-output', text.trim() !== '');
         }
 
         function submitEntry() {
@@ -397,18 +547,14 @@
 
             if (!isDuplicate(text)) {
                 entries.unshift({ date: date.toISOString(), text });
-                document.getElementById('output').innerHTML = text;
+                renderOutput(text);
                 updateHistory();
                 quill.setContents([]);
                 updateCurrentDate(date);
-                // Add separator line below Date heading
                 document.querySelector('#current-date-container h3').classList.add('has-entry');
-                // Hide warning if it was showing
                 warning.classList.remove('show');
             } else {
-                // Show duplicate warning
                 warning.classList.add('show');
-                // Auto-hide after 3 seconds
                 setTimeout(() => {
                     warning.classList.remove('show');
                 }, 3000);
@@ -419,13 +565,10 @@
             return entries.some(entry => entry.text === text);
         }
 
-
-
-
         function loadEntry(index) {
             var entry = entries[index];
             quill.root.innerHTML = entry.text;
-            document.getElementById('output').innerHTML = entry.text;
+            renderOutput(entry.text);
             updateCurrentDate(new Date(entry.date));
         }
 
@@ -453,7 +596,6 @@
                 updateHistory();
                 if (entries.length > 0) {
                     loadEntry(entries.length - 1);
-                    // Add separator line below Date heading
                     document.querySelector('#current-date-container h3').classList.add('has-entry');
                 }
             };
@@ -522,14 +664,11 @@
             });
         }
 
-        // Sort toggle functionality
         let sortNewestFirst = true;
 
         function toggleSort() {
             sortNewestFirst = !sortNewestFirst;
-            const button = document.getElementById('sort-toggle');
-            // Change arrow direction: ⇅ (newest first) or ⇵ (oldest first)
-            button.textContent = sortNewestFirst ? '⇅' : '⇵';
+            setSortIcon();
             updateHistory();
         }
 
@@ -542,6 +681,7 @@
             document.getElementById('history').innerHTML = historyHtml;
         }
 
+        renderIcons();
     </script>
 </body>
 
