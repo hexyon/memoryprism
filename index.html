@@ -7,7 +7,7 @@
     <title>Memory Prism</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Alegreya:wght@400;500;700&display=swap" rel="stylesheet">
     <link id="theme-stylesheet" rel="stylesheet" href="styles/styles.css">
     <style>
@@ -58,11 +58,7 @@
         }
 
         #current-date-container {
-            height: 150px;
-            background-image: url('images/background.png');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
+            height: 158px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -88,11 +84,14 @@
         #current-date-container #current-date {
             position: relative;
             z-index: 1;
-            color: white;
+            color: black;
             margin: 5px 0;
             text-align: center;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            font-weight: normal;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            transform: translateZ(0);
+            backface-visibility: hidden;
         }
 
         #current-date-container h3 {
@@ -484,7 +483,7 @@
                 <h3>Date</h3>
                 <div id="current-date"></div>
                 <div id="current-time"
-                    style="position: relative; z-index: 1; color: white; font-size: 20px; margin-top: 5px; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">
+                    style="position: relative; z-index: 1; color: black; font-size: 20px; margin-top: 5px; font-weight: 300; transform: translateZ(0); backface-visibility: hidden;">
                 </div>
             </div>
             <div class="side-container" id="action-buttons-container">
@@ -724,6 +723,62 @@
         }
 
         renderIcons();
+
+        function initLogoScatter() {
+            const logoText = document.querySelector('.logo-text');
+            const header = document.querySelector('header');
+            if (!logoText || !header) return;
+
+            const original = logoText.textContent;
+            logoText.innerHTML = '';
+            const letterSpans = [];
+            for (const ch of original) {
+                const span = document.createElement('span');
+                span.textContent = ch === ' ' ? '\u00A0' : ch;
+                span.style.display = 'inline-block';
+                span.style.position = 'relative';
+                span.style.willChange = 'transform';
+                logoText.appendChild(span);
+                letterSpans.push(span);
+            }
+
+            let animating = false;
+            const SCATTER_DURATION = 30000;
+
+            function floatLetter(span, baseLeft, baseTop, headerRect, endTime) {
+                if (Date.now() >= endTime) {
+                    span.style.transition = 'transform 0.8s ease';
+                    span.style.transform = 'translate(0px, 0px)';
+                    return;
+                }
+                const rect = span.getBoundingClientRect();
+                const maxX = Math.max(0, headerRect.width - rect.width);
+                const maxY = Math.max(0, headerRect.height - rect.height);
+                const targetX = Math.random() * maxX - baseLeft;
+                const targetY = Math.random() * maxY - baseTop;
+                const duration = 0.9 + Math.random() * 0.8;
+                span.style.transition = `transform ${duration}s ease-in-out`;
+                span.style.transform = `translate(${targetX}px, ${targetY}px)`;
+                setTimeout(() => floatLetter(span, baseLeft, baseTop, headerRect, endTime), duration * 1000);
+            }
+
+            logoText.addEventListener('mouseenter', () => {
+                if (animating) return;
+                animating = true;
+                const headerRect = header.getBoundingClientRect();
+                const endTime = Date.now() + SCATTER_DURATION;
+                letterSpans.forEach(span => {
+                    const spanRect = span.getBoundingClientRect();
+                    const baseLeft = spanRect.left - headerRect.left;
+                    const baseTop = spanRect.top - headerRect.top;
+                    span.style.zIndex = '150';
+                    floatLetter(span, baseLeft, baseTop, headerRect, endTime);
+                });
+                setTimeout(() => { animating = false; }, SCATTER_DURATION);
+            });
+        }
+
+        initLogoScatter();
     </script>
 </body>
 
