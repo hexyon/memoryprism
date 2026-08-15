@@ -360,8 +360,151 @@
             margin: 0;
         }
 
+        @media screen and (max-width: 768px) {
+            header {
+                padding: max(0.75rem, env(safe-area-inset-top)) 1rem 0.75rem;
+            }
+
+            .page-container {
+                flex-direction: column;
+                margin: 10px;
+                padding: 0 15px;
+            }
+
+            .left-sidebar,
+            .right-sidebar,
+            .main-column {
+                width: calc(100% - 30px);
+                margin: 10px 0;
+                max-width: none;
+            }
+
+            .main-container {
+                margin: 0;
+                max-width: none;
+                display: block;
+                height: auto;
+            }
+
+            /* Reorder sidebar and main content */
+            .left-sidebar {
+                order: 2;
+            }
+
+            .main-column {
+                order: 1;
+            }
+
+            .right-sidebar {
+                order: 3;
+            }
+
+            /* Date container styling */
+            #current-date-container {
+                padding: 20px 15px;
+                margin-bottom: 15px;
+                height: auto;
+            }
+
+            #current-date {
+                font-size: 24px;
+                margin: 5px 0;
+            }
+
+            #current-time {
+                font-size: 20px;
+            }
+
+            /* Editor area */
+            #editor {
+                height: 200px;
+                min-height: 200px;
+                margin-top: 15px;
+                font-size: 16px;
+            }
+
+            /* Button group styling */
+            .button-group {
+                display: grid;
+                grid-template-columns: repeat(5, 32px);
+                gap: 8px;
+                margin: 0;
+            }
+
+            .button {
+                width: 32px;
+                height: 32px;
+                margin: 0;
+                font-size: 16px;
+            }
+
+            /* Recorded dates container */
+            #recorded-dates-container {
+                height: auto;
+                max-height: 200px;
+                margin-top: 15px;
+            }
+
+            .history-item {
+                padding: 10px;
+                border-bottom: 1px solid #eee;
+                font-size: 14px;
+            }
+
+            /* Quill editor toolbar */
+            .ql-toolbar {
+                display: flex;
+                flex-wrap: wrap;
+                padding: 8px;
+            }
+
+            .ql-toolbar button {
+                margin: 2px;
+            }
+
+            /* Output area */
+            #output {
+                font-size: 16px;
+            }
+
+            /* Media elements */
+            img,
+            video,
+            audio {
+                max-width: 100%;
+                height: auto;
+                margin: 10px 0;
+            }
+        }
+
+        #mobile-warning {
+            display: none;
+        }
+
+        @media screen and (max-width: 768px) {
+            #mobile-warning {
+                display: block;
+                text-align: center;
+                padding: 14px 20px;
+                background-color: #ffffff;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            }
+
+            #mobile-warning .warning-title {
+                color: #000000;
+                font-weight: 700;
+                font-size: 17px;
+                margin: 0 0 6px;
+            }
+
+            #mobile-warning .warning-text {
+                color: #333333;
+                font-size: 14px;
+                line-height: 1.4;
+                margin: 0;
+            }
+        }
     </style>
-    <link rel="stylesheet" href="styles/mobile.css" media="screen and (max-width: 768px)">
 </head>
 
 <body>
@@ -370,6 +513,11 @@
             <span class="logo-text">Memory Prism</span>
         </div>
     </header>
+
+    <div id="mobile-warning" role="alert">
+        <p class="warning-title">Warning</p>
+        <p class="warning-text">This app is optimized for desktop use. Opening it on a desktop is advised.</p>
+    </div>
 
     <div class="page-container">
         <div class="left-sidebar">
@@ -524,50 +672,17 @@
         }
 
         function loadFile() {
-            var input = document.getElementById('fileInput');
-            var file = input.files[0];
-            if (!file) return;
-
+            var file = document.getElementById('fileInput').files[0];
             var reader = new FileReader();
-
             reader.onload = function (e) {
-                try {
-                    var parsed = JSON.parse(e.target.result);
-                    if (!Array.isArray(parsed)) {
-                        throw new Error('File does not contain a valid memory list');
-                    }
-                    entries = parsed;
-                    updateHistory();
-                    if (entries.length > 0) {
-                        loadEntry(entries.length - 1);
-                        document.querySelector('#current-date-container h3').classList.add('has-entry');
-                    }
-                } catch (err) {
-                    console.error('Failed to parse memory file:', err);
-                    showLoadError();
-                } finally {
-                    input.value = '';
+                entries = JSON.parse(e.target.result);
+                updateHistory();
+                if (entries.length > 0) {
+                    loadEntry(entries.length - 1);
+                    document.querySelector('#current-date-container h3').classList.add('has-entry');
                 }
             };
-
-            reader.onerror = function () {
-                console.error('Failed to read memory file:', reader.error);
-                showLoadError();
-                input.value = '';
-            };
-
             reader.readAsText(file);
-        }
-
-        function showLoadError() {
-            var warning = document.getElementById('duplicate-warning');
-            var originalText = warning.textContent;
-            warning.textContent = "⚠️ Couldn't load that file. Make sure it's a valid Memory Prism .save file.";
-            warning.classList.add('show');
-            setTimeout(() => {
-                warning.classList.remove('show');
-                warning.textContent = originalText;
-            }, 4000);
         }
 
         document.getElementById('media-upload').addEventListener('change', function (e) {
