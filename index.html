@@ -524,17 +524,50 @@
         }
 
         function loadFile() {
-            var file = document.getElementById('fileInput').files[0];
+            var input = document.getElementById('fileInput');
+            var file = input.files[0];
+            if (!file) return;
+
             var reader = new FileReader();
+
             reader.onload = function (e) {
-                entries = JSON.parse(e.target.result);
-                updateHistory();
-                if (entries.length > 0) {
-                    loadEntry(entries.length - 1);
-                    document.querySelector('#current-date-container h3').classList.add('has-entry');
+                try {
+                    var parsed = JSON.parse(e.target.result);
+                    if (!Array.isArray(parsed)) {
+                        throw new Error('File does not contain a valid memory list');
+                    }
+                    entries = parsed;
+                    updateHistory();
+                    if (entries.length > 0) {
+                        loadEntry(entries.length - 1);
+                        document.querySelector('#current-date-container h3').classList.add('has-entry');
+                    }
+                } catch (err) {
+                    console.error('Failed to parse memory file:', err);
+                    showLoadError();
+                } finally {
+                    input.value = '';
                 }
             };
+
+            reader.onerror = function () {
+                console.error('Failed to read memory file:', reader.error);
+                showLoadError();
+                input.value = '';
+            };
+
             reader.readAsText(file);
+        }
+
+        function showLoadError() {
+            var warning = document.getElementById('duplicate-warning');
+            var originalText = warning.textContent;
+            warning.textContent = "⚠️ Couldn't load that file. Make sure it's a valid Memory Prism .save file.";
+            warning.classList.add('show');
+            setTimeout(() => {
+                warning.classList.remove('show');
+                warning.textContent = originalText;
+            }, 4000);
         }
 
         document.getElementById('media-upload').addEventListener('change', function (e) {
