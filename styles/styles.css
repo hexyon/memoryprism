@@ -212,3 +212,18 @@
         transform: translateY(0);
     }
 }
+
+/* On mobile there's no room to the right of the sidebar, so keep the
+   sort button inside the card instead of offsetting past its edge */
+@media screen and (max-width: 768px) {
+    #sort-toggle {
+        top: 10px;
+        right: 10px;
+        width: 34px;
+        height: 34px;
+    }
+
+    #recorded-dates-container h3 {
+        padding-right: 34px;
+    }
+}

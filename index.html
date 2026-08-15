@@ -28,6 +28,12 @@
             unicode-range: U+0051, U+0071;
         }
 
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
         /* Previous styles remain unchanged */
         body {
             font-family: 'Roboto', sans-serif;
@@ -367,14 +373,15 @@
 
             .page-container {
                 flex-direction: column;
-                margin: 10px;
+                margin: 10px 0;
                 padding: 0 15px;
+                overflow-x: hidden;
             }
 
             .left-sidebar,
             .right-sidebar,
             .main-column {
-                width: calc(100% - 30px);
+                width: 100%;
                 margin: 10px 0;
                 max-width: none;
             }
@@ -417,8 +424,8 @@
 
             /* Editor area */
             #editor {
-                height: 200px;
-                min-height: 200px;
+                height: 240px;
+                min-height: 240px;
                 margin-top: 15px;
                 font-size: 16px;
             }
@@ -426,16 +433,22 @@
             /* Button group styling */
             .button-group {
                 display: grid;
-                grid-template-columns: repeat(5, 32px);
-                gap: 8px;
+                grid-template-columns: repeat(5, 44px);
+                justify-content: center;
+                gap: 10px;
                 margin: 0;
             }
 
             .button {
-                width: 32px;
-                height: 32px;
+                width: 44px;
+                height: 44px;
                 margin: 0;
                 font-size: 16px;
+            }
+
+            .button [data-lucide] {
+                width: 20px;
+                height: 20px;
             }
 
             /* Recorded dates container */
