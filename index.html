@@ -40,7 +40,7 @@
         }
 
         .page-container {
-            --container-reference-height: 312px;
+            --container-reference-height: 310px;
             display: flex;
             align-items: flex-start;
             width: 100%;
@@ -57,13 +57,8 @@
         }
 
         .left-sidebar {
-            width: 150px;
+            width: 190px;
             margin-right: 20px;
-        }
-
-        .right-sidebar {
-            width: 200px;
-            margin-left: 20px;
         }
 
         #current-date-container {
@@ -108,13 +103,7 @@
         }
 
         #current-date-container #current-date {
-            font-size: 22px;
-        }
-
-        #recorded-dates-container {
-            box-sizing: border-box;
-            height: var(--container-reference-height);
-            overflow-y: auto;
+            font-size: 24px;
         }
 
         .main-column {
@@ -182,8 +171,7 @@
             border-color: #000000;
         }
 
-        .button [data-lucide],
-        #sort-toggle [data-lucide] {
+        .button [data-lucide]{
             display: block;
             width: 18px;
             height: 18px;
@@ -191,13 +179,8 @@
             pointer-events: none;
         }
 
-        #sort-toggle [data-lucide] {
-            width: 22px;
-            height: 22px;
-        }
-
         #action-buttons-container {
-            padding: 12px;
+            padding: 20px;
         }
 
         #output {
@@ -250,19 +233,6 @@
 
         #output-container.has-output {
             display: block;
-        }
-
-        #history {
-            margin-top: 20px;
-        }
-
-        .history-item {
-            margin-bottom: 10px;
-            cursor: pointer;
-        }
-
-        .history-item:hover {
-            text-decoration: underline;
         }
 
         img {
@@ -321,30 +291,25 @@
             cursor: default;
         }
 
-        .ql-editor::-webkit-scrollbar,
-        #recorded-dates-container::-webkit-scrollbar {
+        .ql-editor::-webkit-scrollbar{
             width: 6px;
         }
 
-        .ql-editor::-webkit-scrollbar-track,
-        #recorded-dates-container::-webkit-scrollbar-track {
+        .ql-editor::-webkit-scrollbar-track{
             background: #f5f5f5;
         }
 
-        .ql-editor::-webkit-scrollbar-thumb,
-        #recorded-dates-container::-webkit-scrollbar-thumb {
+        .ql-editor::-webkit-scrollbar-thumb{
             background-color: #8f8f8f;
             border-radius: 6px;
             border: 1px solid #f5f5f5;
         }
 
-        .ql-editor::-webkit-scrollbar-thumb:hover,
-        #recorded-dates-container::-webkit-scrollbar-thumb:hover {
+        .ql-editor::-webkit-scrollbar-thumb:hover{
             background-color: #6f6f6f;
         }
 
-        .ql-editor::-webkit-scrollbar-button,
-        #recorded-dates-container::-webkit-scrollbar-button {
+        .ql-editor::-webkit-scrollbar-button{
             display: none;
             width: 0;
             height: 0;
@@ -423,7 +388,6 @@
             }
 
             .left-sidebar,
-            .right-sidebar,
             .main-column {
                 width: calc(100% - 30px);
                 margin: 10px 0;
@@ -444,10 +408,6 @@
 
             .main-column {
                 order: 1;
-            }
-
-            .right-sidebar {
-                order: 3;
             }
 
             /* Date container styling */
@@ -487,19 +447,6 @@
                 height: 32px;
                 margin: 0;
                 font-size: 16px;
-            }
-
-            /* Recorded dates container */
-            #recorded-dates-container {
-                height: auto;
-                max-height: 200px;
-                margin-top: 15px;
-            }
-
-            .history-item {
-                padding: 10px;
-                border-bottom: 1px solid #eee;
-                font-size: 14px;
             }
 
             /* Quill editor toolbar */
@@ -574,6 +521,7 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="styles/atmosphere.css">
 </head>
 
 <body>
@@ -593,9 +541,7 @@
             <div class="side-container" id="current-date-container">
                 <h3>Date</h3>
                 <div id="current-date"></div>
-                <div id="current-time"
-                    style="position: relative; z-index: 1; color: black; font-size: 20px; margin-top: 5px; font-weight: 300; transform: translateZ(0); backface-visibility: hidden;">
-                </div>
+                <div id="current-time"></div>
             </div>
             <div class="side-container" id="action-buttons-container">
                 <div class="button-group" aria-label="Memory actions">
@@ -619,15 +565,6 @@
                 <div id="output"></div>
             </div>
         </div>
-        <div class="right-sidebar">
-            <div style="position: relative;">
-                <div class="side-container" id="recorded-dates-container">
-                    <h3>Recorded Dates</h3>
-                    <div id="history"></div>
-                </div>
-                <button id="sort-toggle" onclick="toggleSort()" title="Sort oldest first" aria-label="Sort oldest first"><i data-lucide="arrow-up-narrow-wide" aria-hidden="true"></i></button>
-            </div>
-        </div>
     </div>
     <div id="image-focus-overlay" role="dialog" aria-modal="true" aria-label="Focused image" hidden>
         <img id="focused-image" alt="">
@@ -639,14 +576,6 @@
             if (window.lucide) {
                 window.lucide.createIcons();
             }
-        }
-
-        function setSortIcon() {
-            const button = document.getElementById('sort-toggle');
-            button.innerHTML = `<i data-lucide="${sortNewestFirst ? 'arrow-up-narrow-wide' : 'arrow-down-wide-narrow'}" aria-hidden="true"></i>`;
-            button.title = sortNewestFirst ? 'Sort oldest first' : 'Sort newest first';
-            button.setAttribute('aria-label', button.title);
-            renderIcons();
         }
 
         const BlockEmbed = Quill.import('blots/block/embed');
@@ -686,6 +615,37 @@
             }
         });
 
+        // Show the text cursor automatically on load
+        quill.focus();
+        window.addEventListener('load', function () { quill.focus(); });
+
+        // Align the DATE band's bottom line with the bottom edge of the editor toolbar
+        function alignDateLine() {
+            const toolbar = document.querySelector('.ql-toolbar');
+            const heading = document.querySelector('#current-date-container h3');
+            if (!toolbar || !heading || window.innerWidth <= 768) return;
+            const height = toolbar.getBoundingClientRect().bottom - heading.getBoundingClientRect().top;
+            if (height > 0) heading.style.height = height + 'px';
+        }
+        alignDateLine();
+        window.addEventListener('load', alignDateLine);
+        window.addEventListener('resize', alignDateLine);
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(alignDateLine);
+
+        // Make the line under the writing area land exactly on the bottom edge of the buttons card
+        function alignWritingAreaBottom() {
+            const main = document.querySelector('.main-container');
+            const buttons = document.getElementById('action-buttons-container');
+            if (!main || !buttons) return;
+            if (window.innerWidth <= 768) { main.style.height = ''; return; }
+            const height = buttons.getBoundingClientRect().bottom - main.getBoundingClientRect().top;
+            if (height > 0) main.style.height = height + 'px';
+        }
+        alignWritingAreaBottom();
+        window.addEventListener('load', alignWritingAreaBottom);
+        window.addEventListener('resize', alignWritingAreaBottom);
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(alignWritingAreaBottom);
+
         let entries = [];
 
         function formatDate(date, isForContainer = false) {
@@ -693,7 +653,7 @@
             if (isForContainer) {
                 const formattedDate = d.toLocaleDateString('en-US', {
                     month: 'long',
-                    day: '2-digit',
+                    day: 'numeric',
                     year: 'numeric'
                 });
                 const formattedTime = d.toLocaleTimeString('en-US', {
@@ -701,7 +661,7 @@
                     minute: '2-digit',
                     hour12: true
                 });
-                return { date: formattedDate, time: formattedTime };
+                return { date: `${d.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}<br>${d.getFullYear()}`, time: formattedTime };
             }
             return d.toLocaleString(undefined, {
                 year: 'numeric',
@@ -728,7 +688,7 @@
             if (!isDuplicate(text)) {
                 entries.unshift({ date: date.toISOString(), text });
                 renderOutput(text);
-                updateHistory();
+
                 quill.setContents([]);
                 updateCurrentDate(date);
                 document.querySelector('#current-date-container h3').classList.add('has-entry');
@@ -756,9 +716,56 @@
             const formatted = formatDate(date, true);
             document.getElementById('current-date').innerHTML = formatted.date;
             document.getElementById('current-time').innerHTML = formatted.time;
+            fitDateText();
         }
 
+        // One fixed font size for every date: sized so the widest possible
+        // "Month Day" (e.g. "September 30") fits the card, then used for all dates.
+        function fitDateText() {
+            const dateEl = document.getElementById('current-date');
+            const card = document.getElementById('current-date-container');
+            if (!dateEl || !card) return;
+            dateEl.style.fontSize = '';
+            const maxSize = parseFloat(getComputedStyle(dateEl).fontSize);
+            const available = card.clientWidth - 28; // keeps about 14px from each edge
+
+            // Measure every month with the longest day numbers at the full size
+            const probe = document.createElement('span');
+            const cs = getComputedStyle(dateEl);
+            probe.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;left:-9999px;top:0;';
+            probe.style.fontFamily = cs.fontFamily;
+            probe.style.fontWeight = cs.fontWeight;
+            probe.style.fontSize = maxSize + 'px';
+            document.body.appendChild(probe);
+
+            let widest = 0;
+            for (let m = 0; m < 12; m++) {
+                const monthName = new Date(2024, m, 1).toLocaleDateString('en-US', { month: 'long' });
+                ['28', '29', '30', '31'].forEach(function (day) {
+                    probe.textContent = monthName + ' ' + day;
+                    widest = Math.max(widest, probe.getBoundingClientRect().width);
+                });
+            }
+            probe.textContent = '0000';
+            widest = Math.max(widest, probe.getBoundingClientRect().width);
+            document.body.removeChild(probe);
+
+            let size = maxSize;
+            if (widest > available) {
+                size = Math.floor(maxSize * available / widest * 2) / 2;
+            }
+            // Same size no matter which month/day/year is shown
+            dateEl.style.fontSize = size + 'px';
+        }
+        fitDateText();
+        if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitDateText);
+        window.addEventListener('load', fitDateText);
+
         function saveFile() {
+            // Include anything typed in the editor that hasn't been submitted yet
+            if (quill.getLength() > 1 && !isDuplicate(quill.root.innerHTML)) {
+                submitEntry();
+            }
             var data = JSON.stringify(entries);
             var blob = new Blob([data], { type: 'application/json' });
             var url = URL.createObjectURL(blob);
@@ -769,15 +776,25 @@
         }
 
         function loadFile() {
-            var file = document.getElementById('fileInput').files[0];
+            var input = document.getElementById('fileInput');
+            var file = input.files[0];
+            if (!file) return;
             var reader = new FileReader();
             reader.onload = function (e) {
                 entries = JSON.parse(e.target.result);
-                updateHistory();
+
+                // Newest first, whatever order the file was saved in
+                entries.sort(function (a, b) {
+                    return (Date.parse(b.date) || 0) - (Date.parse(a.date) || 0);
+                });
+
                 if (entries.length > 0) {
-                    loadEntry(entries.length - 1);
+                    loadEntry(0);
                     document.querySelector('#current-date-container h3').classList.add('has-entry');
                 }
+
+                // Allow loading the same file again later
+                input.value = '';
             };
             reader.readAsText(file);
         }
@@ -914,23 +931,6 @@
             if (event.key === 'Escape') closeFocusedImage();
         });
 
-        let sortNewestFirst = true;
-
-        function toggleSort() {
-            sortNewestFirst = !sortNewestFirst;
-            setSortIcon();
-            updateHistory();
-        }
-
-        function updateHistory() {
-            let displayEntries = sortNewestFirst ? entries : entries.slice().reverse();
-            var historyHtml = displayEntries.map((entry, index) => {
-                let actualIndex = sortNewestFirst ? index : entries.length - 1 - index;
-                return `<div class="history-item" onclick="loadEntry(${actualIndex})">${formatDate(entry.date)}</div>`;
-            }).join('');
-            document.getElementById('history').innerHTML = historyHtml;
-        }
-
         renderIcons();
 
         function initLogoScatter() {
@@ -971,7 +971,11 @@
                 setTimeout(() => floatLetter(span, baseLeft, baseTop, headerRect, endTime), duration * 1000);
             }
 
-            logoText.addEventListener('mouseenter', () => {
+            // Only scatter if the pointer stays on the logo for a full 3 seconds
+            const HOVER_DELAY = 3000;
+            let hoverTimer = null;
+
+            function startScatter() {
                 if (animating) return;
                 animating = true;
                 const headerRect = header.getBoundingClientRect();
@@ -984,6 +988,17 @@
                     floatLetter(span, baseLeft, baseTop, headerRect, endTime);
                 });
                 setTimeout(() => { animating = false; }, SCATTER_DURATION);
+            }
+
+            logoText.addEventListener('mouseenter', () => {
+                if (animating) return;
+                clearTimeout(hoverTimer);
+                hoverTimer = setTimeout(startScatter, HOVER_DELAY);
+            });
+
+            logoText.addEventListener('mouseleave', () => {
+                clearTimeout(hoverTimer);
+                hoverTimer = null;
             });
         }
 

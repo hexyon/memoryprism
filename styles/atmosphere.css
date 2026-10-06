@@ -1,0 +1,189 @@
+/* Match AppSystem Pro's neutral surfaces and soft lighting. */
+body {
+    color: var(--text-color);
+    background: radial-gradient(ellipse at 0 0, #ffffff2e, transparent 55%),
+        radial-gradient(ellipse at 100% 40%, #d4d4d42b, transparent 55%), var(--background-color);
+    -webkit-font-smoothing: antialiased;
+}
+
+header {
+    background: #f3f3f3f2;
+    border-bottom-color: var(--border-color);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 1px 0 #ffffffb3, 0 4px 20px #00000005;
+}
+
+.logo-text,
+#current-date-container h3,
+#current-date-container #current-date,
+#output {
+    color: var(--text-color);
+}
+
+.side-container,
+.main-column {
+    background: var(--container-bg);
+    box-shadow: var(--edge-light), var(--surface-shadow);
+}
+
+#current-date-container,
+.main-container,
+#output-container {
+    background: var(--container-bg);
+}
+
+#editor {
+    background: #f3f3f3;
+    box-shadow: none;
+}
+#output-container {
+    border-color: var(--border-color);
+}
+
+/* Date card, following Anthropic's visual language: warm ivory surface,
+   near-black ink, soft oat dividers, a single clay accent, serif display type. */
+#current-date-container {
+    justify-content: flex-start;
+}
+
+/* The soft blur layer adds nothing on a flat ivory surface */
+#current-date-container::before {
+    display: none;
+}
+
+/* Full-width DATE header band with a hairline below it */
+#current-date-container h3,
+#current-date-container h3.has-entry {
+    align-self: stretch;
+    margin: -20px -20px 0;
+    padding: 16px 0 14px;
+    background: #f3f3f3;
+    border-bottom: 1px solid var(--border-color);
+    font-family: 'Alegreya', serif;
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-indent: 0.22em;
+    text-transform: uppercase;
+    color: var(--text-color);
+}
+
+/* Month + day on the first line, year below, always, all at one size.
+   32px is the maximum; index.html picks the single size at which the widest
+   possible date (e.g. "September 30") fits the card, and uses it for every date. */
+#current-date-container #current-date {
+    margin-top: auto;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 32px;
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: 0.005em;
+    color: var(--text-color);
+    white-space: nowrap;
+    width: max-content;
+}
+
+/* Time: small, quiet sans-serif */
+#current-date-container #current-time {
+    position: relative;
+    z-index: 1;
+    margin: 10px 0 auto;
+    font-family: 'Roboto', sans-serif;
+    font-size: 18px;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    color: var(--text-color);
+    text-align: center;
+}
+
+/* Desktop: balance the space above and below the date/time block.
+   Bottom padding moves into height so the card's outer size stays identical. */
+@media screen and (min-width: 769px) {
+    #current-date-container {
+        padding-bottom: 0;
+        height: 196px;
+    }
+
+    /* The DATE band's bottom line sits at the same height as the bottom edge
+       of the editor toolbar (62px = 20px container padding + 42px toolbar).
+       index.html refines this height by measuring the real toolbar. */
+    #current-date-container h3,
+    #current-date-container h3.has-entry {
+        box-sizing: border-box;
+        height: 62px;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+.button{
+    background: var(--control-background);
+    border-color: var(--border-color);
+    color: var(--accent-color);
+    box-shadow: var(--edge-light), 0 2px 3px #00000008;
+    transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.button:hover{
+    background: var(--control-background);
+    border-color: var(--border-color);
+    color: #444444;
+    box-shadow: var(--edge-light), 0 2px 3px #00000008;
+}
+
+.button:active,
+#focus-mode-button.is-active {
+    background: #eaeaea;
+    border-color: var(--primary-color);
+    color: var(--text-color);
+    box-shadow: inset 0 1px 3px #0000001a;
+}
+
+#focus-mode-button.is-active svg circle {
+    fill: var(--primary-color);
+    stroke: var(--primary-color);
+}
+
+.button:focus-visible{
+    outline: 2px solid var(--primary-color);
+    outline-offset: 3px;
+}
+
+#mobile-warning {
+    background: var(--background-color);
+}
+
+#mobile-warning .warning-title {
+    color: var(--text-color);
+}
+
+#mobile-warning .warning-text {
+    color: var(--secondary-color);
+}
+
+
+/* Desktop: the six action buttons stretch to fill their card edge to edge,
+   as square tiles, with icons scaled to match. */
+@media screen and (min-width: 769px) {
+    .button-group {
+        grid-template-columns: repeat(3, 1fr);
+        justify-content: stretch;
+        gap: 6px;
+        width: 100%;
+    }
+
+    .button-group .button {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1 / 1;
+    }
+
+    .button-group .button [data-lucide] {
+        width: 24px;
+        height: 24px;
+        stroke-width: 2;
+    }
+}
