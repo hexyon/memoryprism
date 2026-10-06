@@ -660,7 +660,7 @@
                     hour: 'numeric',
                     minute: '2-digit',
                     hour12: true
-                });
+                }).replace(/\bAM\b/gi, 'a.m.').replace(/\bPM\b/gi, 'p.m.');
                 return { date: `${d.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}<br>${d.getFullYear()}`, time: formattedTime };
             }
             return d.toLocaleString(undefined, {
@@ -670,7 +670,7 @@
                 hour: 'numeric',
                 minute: '2-digit',
                 hour12: true
-            });
+            }).replace(/\bAM\b/gi, 'a.m.').replace(/\bPM\b/gi, 'p.m.');
         }
 
         function renderOutput(text) {
