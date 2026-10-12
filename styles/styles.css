@@ -27,12 +27,6 @@
 
 
 
-#current-date-container h3.has-entry {
-    border-bottom: 2px solid black;
-    padding-bottom: 5px;
-    margin-bottom: 5px;
-}
-
 /* Button styling */
 .button {
     background: var(--control-background);

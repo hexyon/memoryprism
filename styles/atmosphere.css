@@ -47,14 +47,8 @@ header {
     justify-content: flex-start;
 }
 
-/* The soft blur layer adds nothing on a flat ivory surface */
-#current-date-container::before {
-    display: none;
-}
-
 /* Full-width DATE header band with a hairline below it */
-#current-date-container h3,
-#current-date-container h3.has-entry {
+#current-date-container h3 {
     align-self: stretch;
     margin: -20px -20px 0;
     padding: 16px 0 14px;
@@ -108,8 +102,7 @@ header {
     /* The DATE band's bottom line sits at the same height as the bottom edge
        of the editor toolbar (62px = 20px container padding + 42px toolbar).
        index.html refines this height by measuring the real toolbar. */
-    #current-date-container h3,
-    #current-date-container h3.has-entry {
+    #current-date-container h3 {
         box-sizing: border-box;
         height: 62px;
         padding: 0;
