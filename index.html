@@ -343,6 +343,16 @@
             margin: 0;
         }
 
+        /* Square "v2" switch beside the logo, same look as the action buttons */
+        .version-button {
+            flex: none;
+            margin-left: 14px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+        }
+
         @media screen and (max-width: 768px) {
             header {
                 padding: max(0.75rem, env(safe-area-inset-top)) 1rem 0.75rem;
@@ -495,6 +505,7 @@
     <header role="banner">
         <div class="logo">
             <span class="logo-text">Memory Prism</span>
+            <button class="button version-button" type="button" onclick="openV2()" title="Switch to v2" aria-label="Switch to v2">v2</button>
         </div>
     </header>
 
@@ -950,6 +961,14 @@
         }
 
         initLogoScatter();
+
+        // Switch to the v2 app (kept in the v2/ folder next to this file).
+        // v1 keeps entries only in memory, so warn before leaving unsaved text behind.
+        function openV2() {
+            const hasText = quill.getLength() > 1 || document.getElementById('output-container').classList.contains('has-output');
+            if (hasText && !confirm('Switch to v2? Anything in v1 that is not saved to a file will be lost.')) return;
+            window.location.href = 'v2/index.html';
+        }
     </script>
 </body>
 

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <title>Memory Prism</title>
+  <defs>
+    <clipPath id="striped-stems">
+      <rect x="30" y="18" width="4" height="28"/>
+      <rect x="38" y="18" width="4" height="28"/>
+    </clipPath>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#292825"/>
+  <g transform="translate(32 32) scale(1.1) translate(-32 -32)">
+    <g fill="#f2eee5">
+      <path d="M10 46V18L22 30L34 18V46H30V28L22 36L14 28V46Z"/>
+      <path fill-rule="evenodd" d="M38 46V18H47L54 25V31L47 38H42V46ZM42 22V34H45.4L50 29.4V26.6L45.4 22Z"/>
+    </g>
+    <g clip-path="url(#striped-stems)" fill="none" stroke="#292825" stroke-width="1.2">
+      <path d="M29 32L43 18M29 38L43 24M29 44L43 30M29 50L43 36M29 56L43 42"/>
+    </g>
+  </g>
+</svg>
